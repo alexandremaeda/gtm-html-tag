@@ -1,106 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- CSS only -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+      crossorigin="anonymous"
+    />
+    <title>Test form</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- CSS only -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-  <title>Test form</title>
-</head>
-
-<body>
-  <div class="container">
-    <!-- Content here -->
-    <div class="row">
-      <div class="col-md-6">
-        <form>
-          <div class="mb-3">
-            <label for="name" class="form-label">Name</label>
-            <input type="email" class="form-control" id="name">
-          </div>
-          <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">Email address</label>
-            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-            <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
-          </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+  <body>
+    <div class="container">
+      <!-- Content here -->
+      <div class="row">
+        <div class="col-md-6">
+          <form id="formTest">
+            <div class="mb-3">
+              <label for="name" class="form-label">Name</label>
+              <input type="text" class="form-control" id="name" required />
+            </div>
+            <div class="mb-3">
+              <label for="exampleInputEmail1" class="form-label"
+                >Email address</label
+              >
+              <input
+                type="email"
+                class="form-control"
+                id="exampleInputEmail1"
+                required
+                aria-describedby="emailHelp"
+              />
+              <div id="emailHelp" class="form-text">
+                We'll never share your email with anyone else.
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
       </div>
     </div>
-    <div class="row">
-      <div class="col-md-6">
-        <form>
-          <div class="mb-3">
-            <label for="name" class="form-label">Name</label>
-            <input type="email" class="form-control" id="name">
-          </div>
-          <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">Email address</label>
-            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-            <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
-          </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</body>
+  </body>
 
-<script>
-  function getUrlParams(query) {
-    var params = {};
-    new URLSearchParams(query).forEach((value, key) => {
-      var decodedKey = decodeURIComponent(key);
-      var decodedValue = decodeURIComponent(value);
-      // This key is part of an array
-      if (decodedKey.endsWith("[]")) {
-        decodedKey = decodedKey.replace("[]", "");
-        params[decodedKey] || (params[decodedKey] = []);
-        params[decodedKey].push(decodedValue);
-        // Just a regular parameter
-      } else {
-        params[decodedKey] = decodedValue;
+  <script>
+    (function () {
+      function getUrlParams(query) {
+        var targetParams = [
+          "utm_source",
+          "utm_medium",
+          "utm_campaign",
+          "utm_content",
+          "utm_term",
+        ];
+        var params = {};
+        new URLSearchParams(query).forEach((value, key) => {
+          var decodedKey = decodeURIComponent(key);
+
+          if (targetParams.indexOf(decodedKey) < 0) {
+            return;
+          }
+
+          var decodedValue = decodeURIComponent(value);
+          // This key is part of an array
+          if (decodedKey.endsWith("[]")) {
+            decodedKey = decodedKey.replace("[]", "");
+            params[decodedKey] || (params[decodedKey] = []);
+            params[decodedKey].push(decodedValue);
+            // Just a regular parameter
+          } else {
+            params[decodedKey] = decodedValue;
+          }
+        });
+
+        return params;
       }
-    });
 
-    return params;
-  }
+      function createInput(name, value) {
+        var input = document.createElement("input");
+        input.type = "hidden";
+        input.id = name;
+        input.name = name;
+        input.value = value;
 
-  function createInput(name, value){
-    var input = document.createElement("input");
-    input.type = "text";
-    input.name = name;
-    input.value = value;
-
-    return input;
-  }
-
-  var targetParams = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"];
-  var urlParamsString = window.location.search;
-  var urlParams = getUrlParams(urlParamsString) || null;
-  var foundParams = [];
-  var createdInputs = [];
-
-  // if(!urlParams){
-  // }
-
-  var formsCollection = document.getElementsByTagName("form");
-
-  // if(!formsCollection.length){
-  // }
-
-  for (var i = 0; i < targetParams.length; i++) {
-    var parameter = targetParams[i];
-    
-    if(urlParams[parameter]){
-      for(var y = 0; y < formsCollection.length; y++){
-        formsCollection[y].appendChild(createInput(parameter, urlParams[parameter]));
+        return input;
       }
-    }
-  }
-</script>
 
+      var urlParamsString = window.location.search;
+      var urlParams = getUrlParams(urlParamsString) || null;
+      var urlParamsKeys = Object.keys(urlParams);
+
+      if (!urlParamsKeys || !urlParamsKeys.length) {
+        console.log("Not params found.");
+        return;
+      }
+
+      var formsCollection = document.getElementsByTagName("form");
+
+      for (var i = 0; i < urlParamsKeys.length; i++) {
+        var parameter = urlParamsKeys[i];
+
+        if (urlParams[parameter]) {
+          console.log(`Found parameter: ${parameter}.`);
+          for (var y = 0; y < formsCollection.length; y++) {
+            formsCollection[y].appendChild(
+              createInput(parameter, urlParams[parameter])
+            );
+          }
+        }
+      }
+
+      // print form values
+      var form = document.getElementById("formTest");
+      form.addEventListener("submit", function (event) {
+        // event.preventDefault();
+
+        var valuesString = "";
+
+        for (let el of event.target.elements) {
+          if (el.value) {
+            valuesString += `${el.id}: ${el.value} \n`;
+          }
+        }
+
+        alert(valuesString);
+      });
+    })();
+  </script>
 </html>
