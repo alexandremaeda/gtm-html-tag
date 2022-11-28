@@ -1,5 +1,5 @@
 (function () {
-  function getUrlParams(query) {
+  function getUrlParams() {
     var targetParams = [
       "utm_source",
       "utm_medium",
@@ -7,29 +7,26 @@
       "utm_content",
       "utm_term",
     ];
-    var params = {};
-    new URLSearchParams(query).forEach((value, key) => {
-      var decodedKey = decodeURIComponent(key);
 
-      if (targetParams.indexOf(decodedKey) < 0) {
+    var pairs = window.location.search.substring(1).split("&"),
+      params = {},
+      pair,
+      i;
+
+    for (i in pairs) {
+      if (pairs[i] === "") continue;
+
+      pair = pairs[i].split("=");
+
+      if (targetParams.indexOf(pair[0]) < 0) {
         return;
       }
 
-      var decodedValue = decodeURIComponent(value);
-      // This key is part of an array
-      if (decodedKey.endsWith("[]")) {
-        decodedKey = decodedKey.replace("[]", "");
-        params[decodedKey] || (params[decodedKey] = []);
-        params[decodedKey].push(decodedValue);
-        // Just a regular parameter
-      } else {
-        params[decodedKey] = decodedValue;
-      }
-    });
+      params[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+    }
 
     return params;
   }
-
   function createInput(name, value) {
     var input = document.createElement("input");
     input.type = "hidden";
@@ -40,8 +37,7 @@
     return input;
   }
 
-  var urlParamsString = window.location.search;
-  var urlParams = getUrlParams(urlParamsString) || null;
+  var urlParams = getUrlParams() || null;
   var urlParamsKeys = Object.keys(urlParams);
 
   if (!urlParamsKeys || !urlParamsKeys.length) {
@@ -55,7 +51,7 @@
     var parameter = urlParamsKeys[i];
 
     if (urlParams[parameter]) {
-      console.log(`Found parameter: ${parameter}.`);
+      console.log("Found parameter: " + parameter + ".");
       for (var y = 0; y < formsCollection.length; y++) {
         formsCollection[y].appendChild(
           createInput(parameter, urlParams[parameter])
@@ -71,9 +67,10 @@
 
     var valuesString = "";
 
-    for (let el of event.target.elements) {
+    for (let i = 0; i < event.target.elements.length; i++) {
+      var el = event.target.elements[i];
       if (el.value) {
-        valuesString += `${el.id}: ${el.value} \n`;
+        valuesString += el.id + ": " + el.value + "\n";
       }
     }
 
