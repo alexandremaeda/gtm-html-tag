@@ -30,6 +30,22 @@
         </form>
       </div>
     </div>
+    <div class="row">
+      <div class="col-md-6">
+        <form>
+          <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="email" class="form-control" id="name">
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Email address</label>
+            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
+    </div>
   </div>
 </body>
 
@@ -62,8 +78,11 @@
     return input;
   }
 
+  var targetParams = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"];
   var urlParamsString = window.location.search;
   var urlParams = getUrlParams(urlParamsString) || null;
+  var foundParams = [];
+  var createdInputs = [];
 
   // if(!urlParams){
   // }
@@ -73,14 +92,15 @@
   // if(!formsCollection.length){
   // }
 
-  for(var i=0; i < formsCollection.length; i++)
-  {
+  for (var i = 0; i < targetParams.length; i++) {
+    var parameter = targetParams[i];
     
-    if(urlParams.utm_source){
-      formsCollection[i].appendChild(createInput("utm_source", urlParams.utm_source));
-    } 
+    if(urlParams[parameter]){
+      for(var y = 0; y < formsCollection.length; y++){
+        formsCollection[y].appendChild(createInput(parameter, urlParams[parameter]));
+      }
+    }
   }
-  
 </script>
 
 </html>
