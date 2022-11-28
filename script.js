@@ -67,7 +67,7 @@
 
     var valuesString = "";
 
-    for (let i = 0; i < event.target.elements.length; i++) {
+    for (var i = 0; i < event.target.elements.length; i++) {
       var el = event.target.elements[i];
       if (el.value) {
         valuesString += el.id + ": " + el.value + "\n";
