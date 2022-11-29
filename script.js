@@ -1,79 +1,70 @@
-(function () {
-  function getUrlParams() {
-    var targetParams = [
-      "utm_source",
-      "utm_medium",
-      "utm_campaign",
-      "utm_content",
-      "utm_term",
-    ];
+try {
+  (function () {
+    console.log("Getting params...");
 
-    var pairs = window.location.search.substring(1).split("&"),
-      params = {},
-      pair,
-      i;
+    function getUrlParams() {
+      var targetParams = [
+        "utm_source",
+        "utm_medium",
+        "utm_campaign",
+        "utm_content",
+        "utm_term",
+      ];
 
-    for (i in pairs) {
-      if (pairs[i] === "") continue;
+      var pairs = window.location.search.substring(1).split("&"),
+        params = {},
+        pair,
+        i;
 
-      pair = pairs[i].split("=");
+      for (i in pairs) {
+        if (pairs[i] === "") continue;
 
-      if (targetParams.indexOf(pair[0]) < 0) {
-        return;
+        pair = pairs[i].split("=");
+
+        if (targetParams.indexOf(pair[0]) < 0) {
+          continue;
+        }
+
+        params[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
       }
 
-      params[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+      return params;
+    }
+    function createInput(name, value) {
+      var input = document.createElement("input");
+      input.type = "hidden";
+      input.id = name;
+      input.name = name;
+      input.value = value;
+
+      return input;
     }
 
-    return params;
-  }
-  function createInput(name, value) {
-    var input = document.createElement("input");
-    input.type = "hidden";
-    input.id = name;
-    input.name = name;
-    input.value = value;
+    var urlParams = getUrlParams() || {};
+    var urlParamsKeys = Object.keys(urlParams);
 
-    return input;
-  }
-
-  var urlParams = getUrlParams() || null;
-  var urlParamsKeys = Object.keys(urlParams);
-
-  if (!urlParamsKeys || !urlParamsKeys.length) {
-    console.log("Not params found.");
-    return;
-  }
-
-  var formsCollection = document.getElementsByTagName("form");
-
-  for (var i = 0; i < urlParamsKeys.length; i++) {
-    var parameter = urlParamsKeys[i];
-
-    if (urlParams[parameter]) {
-      console.log("Found parameter: " + parameter + ".");
-      for (var y = 0; y < formsCollection.length; y++) {
-        formsCollection[y].appendChild(
-          createInput(parameter, urlParams[parameter])
-        );
-      }
+    if (!urlParamsKeys || !urlParamsKeys.length) {
+      console.log("Not params found.");
+      return;
     }
-  }
 
-  // print form values
-  var form = document.getElementById("formTest");
-  form.addEventListener("submit", function (event) {
-    // event.preventDefault();
+    var formsCollection = document.getElementsByTagName("form");
 
-    var valuesString = "";
+    for (var i = 0; i < urlParamsKeys.length; i++) {
+      var parameter = urlParamsKeys[i];
 
-    for (var i = 0; i < event.target.elements.length; i++) {
-      var el = event.target.elements[i];
-      if (el.value) {
-        valuesString += el.id + ": " + el.value + "\n";
+      if (urlParams[parameter]) {
+        console.log("Found parameter: " + parameter + ".");
+        for (var y = 0; y < formsCollection.length; y++) {
+          formsCollection[y].appendChild(
+            createInput(parameter, urlParams[parameter])
+          );
+        }
       }
     }
 
-    alert(valuesString);
-  });
-})();
+    console.log("Getting params end.");
+  })();
+} catch (err) {
+  console.error("Error on get params.", err);
+}
