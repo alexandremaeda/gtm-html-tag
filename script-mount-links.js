@@ -25,6 +25,8 @@ try {
           continue;
         }
 
+        console.log("Found param: " + pair[0]);
+
         params[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
       }
 
@@ -35,12 +37,13 @@ try {
       var link = "";
       var urlParamsKeys = Object.keys(urlParams);
       for (let i = 0; i < urlParamsKeys.length; i++) {
+        var lastIndex = i + 1 === urlParamsKeys.length;
         var key = urlParamsKeys[i];
         var value = urlParams[urlParamsKeys[i]];
 
         link += key + "=" + value;
 
-        if (i <= urlParamsKeys.length) {
+        if (i <= urlParamsKeys.length && !lastIndex) {
           link += "&";
         }
       }
@@ -56,7 +59,13 @@ try {
       return;
     }
 
-    var prefix = ["https://payment.hotmart.com", "https://pay.hotmart.com"];
+    var targetLinks = [
+      "https://sun.eduzz.com",
+      "https://payment.hotmart.com",
+      "https://pay.hotmart.com",
+      "https://pay.kiwify.com.br",
+      "https://app.monetizze.com.br",
+    ];
     var linkElements = document.querySelectorAll("a");
 
     if (!linkElements || !linkElements.length) {
@@ -68,13 +77,13 @@ try {
       var el = linkElements[i];
 
       if (el && el.href) {
-        for (let y = 0; y < prefix.length; y++) {
-          var currentPrefix = prefix[y];
+        for (let y = 0; y < targetLinks.length; y++) {
+          var currentLink = targetLinks[y];
 
-          if (el.href.indexOf(currentPrefix)) {
+          if (el.href.indexOf(currentLink) >= 0) {
             var queryParams = mountQueryParams(urlParams);
             var hasQueryParameter = el.href.indexOf("?");
-            if (hasQueryParameter) {
+            if (hasQueryParameter >= 0) {
               el.href += "&" + queryParams;
             } else {
               el.href += "?" + queryParams;
