@@ -36,7 +36,7 @@ try {
     function mountQueryParams(urlParams) {
       var link = "";
       var urlParamsKeys = Object.keys(urlParams);
-      for (let i = 0; i < urlParamsKeys.length; i++) {
+      for (var i = 0; i < urlParamsKeys.length; i++) {
         var lastIndex = i + 1 === urlParamsKeys.length;
         var key = urlParamsKeys[i];
         var value = urlParams[urlParamsKeys[i]];
@@ -73,11 +73,11 @@ try {
       return;
     }
 
-    for (let i = 0; i < linkElements.length; i++) {
+    for (var i = 0; i < linkElements.length; i++) {
       var el = linkElements[i];
 
       if (el && el.href) {
-        for (let y = 0; y < targetLinks.length; y++) {
+        for (var y = 0; y < targetLinks.length; y++) {
           var currentLink = targetLinks[y];
 
           if (el.href.indexOf(currentLink) >= 0) {
